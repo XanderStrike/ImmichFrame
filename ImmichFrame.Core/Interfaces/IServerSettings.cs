@@ -23,6 +23,7 @@
         public List<Guid> ExcludedAlbums { get; }
         public List<Guid> People { get; }
         public int? Rating { get; }
+        public double? RecencyBias { get; }
 
         public void ValidateAndInitialize();
     }

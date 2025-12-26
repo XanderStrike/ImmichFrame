@@ -21,6 +21,7 @@ public class ServerSettingsV1 : IConfigSettable
     public List<Guid> ExcludedAlbums { get; set; } = new List<Guid>();
     public List<Guid> People { get; set; } = new List<Guid>();
     public int? Rating { get; set; }
+    public double? RecencyBias { get; set; }
     public List<string> Webcalendars { get; set; } = new List<string>();
     public int RefreshAlbumPeopleInterval { get; set; } = 12;
     public string? WeatherApiKey { get; set; } = string.Empty;
@@ -87,6 +88,7 @@ public class ServerSettingsV1Adapter(ServerSettingsV1 _delegate) : IServerSettin
         public List<Guid> ExcludedAlbums => _delegate.ExcludedAlbums;
         public List<Guid> People => _delegate.People;
         public int? Rating => _delegate.Rating;
+        public double? RecencyBias => _delegate.RecencyBias;
 
         public void ValidateAndInitialize() { }
     }

@@ -90,6 +90,7 @@ public class ServerAccountSettings : IAccountSettings, IConfigSettable
     public List<Guid> ExcludedAlbums { get; set; } = new();
     public List<Guid> People { get; set; } = new();
     public int? Rating { get; set; }
+    public double? RecencyBias { get; set; }
 
     public void ValidateAndInitialize()
     {
