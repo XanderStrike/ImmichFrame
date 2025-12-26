@@ -57,6 +57,7 @@
 	let unsubscribeStop: () => void;
 
 	let cursorVisible = $state(true);
+	let retryInterval: ReturnType<typeof setInterval> | null = null;
 	let timeoutId: number;
 
 	const clientIdentifier = page.url.searchParams.get('client');
@@ -339,6 +340,44 @@
 
 		if (unsubscribeStop) {
 			unsubscribeStop();
+		}
+
+		if (retryInterval) {
+			clearInterval(retryInterval);
+		}
+	});
+
+	// Retry every 10 minutes when in error state
+	$effect(() => {
+		if (error && !authError) {
+			if (retryInterval) {
+				clearInterval(retryInterval);
+			}
+
+			// Set up retry interval (10 minutes = 600000ms)
+			retryInterval = setInterval(async () => {
+				await loadAssets();
+				if (!error) {
+					// If successful, restart the slideshow
+					await getNextAssets();
+					if (progressBar) {
+						progressBar.play();
+					}
+				}
+			}, 600000);
+
+			return () => {
+				if (retryInterval) {
+					clearInterval(retryInterval);
+					retryInterval = null;
+				}
+			};
+		} else {
+			// Clear interval if error is cleared
+			if (retryInterval) {
+				clearInterval(retryInterval);
+				retryInterval = null;
+			}
 		}
 	});
 </script>
