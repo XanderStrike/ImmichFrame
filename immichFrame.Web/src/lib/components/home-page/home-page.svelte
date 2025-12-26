@@ -59,6 +59,7 @@
 	let cursorVisible = $state(true);
 	let retryInterval: ReturnType<typeof setInterval> | null = null;
 	let timeoutId: number;
+	let dailyRefreshTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	const clientIdentifier = page.url.searchParams.get('client');
 	const authsecret = page.url.searchParams.get('authsecret');
@@ -327,9 +328,17 @@
 
 		getNextAssets();
 
+		// Daily page refresh to roll out frontend updates (24 hours)
+		dailyRefreshTimeout = setTimeout(() => {
+			location.reload();
+		}, 86400000); // 24 * 60 * 60 * 1000 = 86400000ms
+
 		return () => {
 			window.removeEventListener('mousemove', showCursor);
 			window.removeEventListener('click', showCursor);
+			if (dailyRefreshTimeout) {
+				clearTimeout(dailyRefreshTimeout);
+			}
 		};
 	});
 
@@ -344,6 +353,10 @@
 
 		if (retryInterval) {
 			clearInterval(retryInterval);
+		}
+
+		if (dailyRefreshTimeout) {
+			clearTimeout(dailyRefreshTimeout);
 		}
 	});
 
