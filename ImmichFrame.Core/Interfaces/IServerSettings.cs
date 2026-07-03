@@ -25,6 +25,7 @@
         public List<Guid> People { get; }
         public List<string> Tags { get; }
         public int? Rating { get; }
+        public double? RecencyBias { get; }
 
         public void ValidateAndInitialize();
     }

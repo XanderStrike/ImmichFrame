@@ -71,6 +71,7 @@
 	let unsubscribeRestart: () => void;
 	let unsubscribeStop: () => void;
 	let refreshInterval: number;
+	let dailyRefreshTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	let cursorVisible = $state(true);
 
@@ -462,6 +463,11 @@
 
 		getNextAssets();
 
+		// Daily page refresh to roll out frontend updates (24 hours)
+		dailyRefreshTimeout = setTimeout(() => {
+			location.reload();
+		}, 86400000); // 24 * 60 * 60 * 1000 = 86400000ms
+
 		return () => {
 			window.removeEventListener('mousemove', showCursor);
 			window.removeEventListener('click', showCursor);
@@ -469,6 +475,9 @@
 			window.clearTimeout(timeoutId);
 			window.clearTimeout(videoStallTimeout);
 			window.clearTimeout(watchdogTimer);
+			if (dailyRefreshTimeout) {
+				clearTimeout(dailyRefreshTimeout);
+			}
 		};
 	});
 
@@ -491,6 +500,10 @@
 		});
 		await Promise.allSettled(revokes);
 		assetPromisesDict = {};
+
+		if (dailyRefreshTimeout) {
+			clearTimeout(dailyRefreshTimeout);
+		}
 	});
 </script>
 

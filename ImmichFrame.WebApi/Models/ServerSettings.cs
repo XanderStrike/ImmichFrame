@@ -94,6 +94,7 @@ public class ServerAccountSettings : IAccountSettings, IConfigSettable
     public List<Guid> People { get; set; } = new();
     public List<string> Tags { get; set; } = new();
     public int? Rating { get; set; }
+    public double? RecencyBias { get; set; }
 
     public void ValidateAndInitialize()
     {
